@@ -1,0 +1,145 @@
+.ggwd-guess {
+  --google-blue: #4285F4;
+  --google-red: #EA4335;
+  --google-yellow: #FBBC05;
+  --google-green: #34A853;
+
+  --ggwd-guess-inf: 1000000000px;
+  --ggwd-guess-padding-vertical: 10px;
+  --ggwd-guess-padding-horizontal: 2px;
+  --ggwd-guess-input-background: white;
+  --ggwd-guess-input-border-color: #9a9a9a;
+  --ggwd-guess-input-padding-vertical: 5px;
+  --ggwd-guess-input-padding-horizontal: 5px;
+  --ggwd-guess-input-margin: 10px;
+  --ggwd-guess-button-margin-right: 3px;
+
+  --ggwd-history-gap: 5px;
+  --ggwd-history-color: black;
+  --ggwd-history-split-color: gray;
+  --ggwd-history-split-width: 2px;
+  --ggwd-history-horizontal-margin: 5px;
+  --ggwd-history-fail-color: #af4040;
+  --ggwd-history-success-color: #00dd00;
+
+  --ggwd-states-color: black;
+  --ggwd-states-size: 12px;
+  --ggwd-states-margin-left: 10px;
+  --ggwd-states-gap: 20px;
+}
+
+.ggwd-guess {
+  padding: var(--ggwd-guess-padding-vertical) var(--ggwd-guess-padding-horizontal);
+  width: auto;
+  display: flex;
+  flex-direction: column;
+}
+.ggwd-guess-input {
+  background-color: var(--ggwd-guess-input-background);
+  border: 1px solid;
+  border-color: var(--ggwd-guess-input-border-color);
+  border-radius: var(--ggwd-guess-inf);
+  margin: 0 var(--ggwd-guess-input-margin);
+  padding: 1px;
+  display: flex;
+}
+.ggwd-guess-input-box {
+  padding: var(--ggwd-guess-input-padding-vertical) var(--ggwd-guess-input-padding-horizontal);
+  border: none;
+  background: none;
+  flex: 1;
+}
+.ggwd-guess-input-box:focus-visible {
+  outline: 0;
+}
+.ggwd-guess-input:focus-within {
+  border-color: transparent;
+  background: linear-gradient(var(--ggwd-guess-input-background)),
+              linear-gradient(90deg, var(--google-blue), var(--google-red), var(--google-yellow), var(--google-green));
+  border-width: 2px;
+  padding: 0px;
+  /* margin-right: 0; */
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+}
+.ggwd-guess-button {
+  width: calc(30px - var(--ggwd-guess-button-margin-right));
+  margin-right: var(--ggwd-guess-button-margin-right);
+  border: unset;
+  background-color: unset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.ggwd-guess-input:focus-within .ggwd-guess-input-split {
+  height: auto;
+  width: 1px;
+  background-color: var(--ggwd-guess-input-border-color);
+  width: 2px;
+  background-color: var(--google-green);
+}
+.ggwd-guess-input:focus-within .ggwd-guess-button {
+  color: var(--google-green);
+  font-weight: 800;
+  /* padding-right: var(--ggwd-guess-input-margin); */
+  margin-right: 0;
+}
+.ggwd-guess-input:focus-within .ggwd-guess-button:active {
+  background-color: var(--google-yellow);
+  border-top-right-radius: var(--ggwd-guess-inf);
+  border-bottom-right-radius: var(--ggwd-guess-inf);
+}
+.ggwd-guess-input:not(:focus-within) .ggwd-guess-button {
+  display: none;
+}
+
+.ggwd-guess-history-list-outer {
+  flex: 1;
+  margin-top: var(--ggwd-history-gap);
+  position: relative;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+.ggwd-guess-history-list {
+  position: absolute;
+  display: flex;
+  left: 0;
+  right: 0;
+  gap: var(--ggwd-history-gap);
+  flex-direction: column;
+}
+.ggwd-guess-history, .ggwd-guess-history-title {
+  color: var(--ggwd-history-color);
+  width: auto;
+  margin: 0 var(--ggwd-history-horizontal-margin);
+  border-bottom: solid transparent 2px;
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  background-image: linear-gradient(var(--ggwd-game-background-color)),
+                    linear-gradient(90deg, transparent, var(--ggwd-history-split-color), var(--ggwd-history-split-color), var(--ggwd-history-split-color), transparent);
+  display: flex;
+}
+.ggwd-guess-history-attempt {
+  flex: 0 0 30%;
+}
+.ggwd-guess-history-word {
+  flex: 0 0 40%;
+}
+.ggwd-guess-history-success {
+  color:var(--ggwd-history-success-color);
+}
+.ggwd-guess-history-fail {
+  color:var(--ggwd-history-fail-color);
+}
+.ggwd-guess-history-times {
+  flex: 0 0 30%;
+}
+
+.ggwd-stats {
+  color: var(--ggwd-states-color);
+  font-size: var(--ggwd-states-size);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ggwd-states-gap);
+  margin-left: var(--ggwd-states-margin-left);
+}

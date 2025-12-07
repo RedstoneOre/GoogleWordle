@@ -1,0 +1,244 @@
+.ggwd-search {
+  --ggwd-text-unlock-content: '...';
+  --ggwd-text-unlock-content-desc: 'This achievement thing will be unlocked when 70% of the content is unlocked!';
+
+  --ggwd-search-inf: 1000000000px;
+  --ggwd-search-panel-color-width: 5px;
+  --ggwd-search-gap: 10px;
+
+  --ggwd-search-bar-margin-side: 20px;
+  --ggwd-search-bar-margin-top: 10px;
+  --ggwd-search-bar-margin-bottom: 5px;
+  --ggwd-search-bar-border: 1px gray solid;
+  --ggwd-search-bar-padding: 5px;
+  --ggwd-search-bar-icon-width: 30px;
+
+  --ggwd-search-start-google-page-background: lightblue;
+  --ggwd-search-result-list-margin: 10px;
+  --ggwd-search-result-list-background: white;
+
+  --ggwd-search-result-gap: 30px;
+
+  --ggwd-search-title-img-size: 28px;
+  --ggwd-search-title-img-background: black;
+  --ggwd-search-title-gap: 10px;
+  --ggwd-search-title-text-color: black;
+  --ggwd-search-title-text-size: 15px;
+  --ggwd-search-title-text-weight: 450;
+  --ggwd-search-title-info-gap: 0px;
+  --ggwd-search-title-info-color: gray;
+  --ggwd-search-title-info-size: 10px;
+
+  --ggwd-search-title-theme-gap: 10px;
+  --ggwd-search-theme-size: 20px;
+  --ggwd-search-theme-color: #1a0dab;
+
+  --ggwd-search-theme-content-gap: 3px;
+  --ggwd-search-content-color: #1f1f1f;
+  --ggwd-search-content-font-size: 15px;
+  --ggwd-search-about-color: gray;
+  --ggwd-search-about-font-size: 12px;
+
+  --ggwd-secret-overlay-contract: 2px;
+  --ggwd-secret-hidden-overlay: black;
+  --ggwd-secret-overlay-text-color: lightgray;
+}
+
+.ggwd-search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ggwd-search-gap);
+  background: var(--ggwd-search-result-list-background);
+  margin: var(--ggwd-search-panel-color-width);
+  border-bottom-left-radius: calc(var(--ggwd-game-border-radius) - var(--ggwd-search-panel-color-width));
+}
+.ggwd-search-result-list-outer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: auto;
+  position: relative;
+}
+.ggwd-search-result-list {
+  display: flex;
+  margin: var(--ggwd-search-result-list-margin);
+  margin-top: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  flex: 0 0 100%;
+  position: absolute;
+}
+
+.ggwd-search-bar {
+  margin: var(--ggwd-search-bar-margin-side);
+  margin-top: var(--ggwd-search-bar-margin-top);
+  margin-bottom: var(--ggwd-search-bar-margin-bottom);
+  border: var(--ggwd-search-bar-border);
+  padding: var(--ggwd-search-bar-padding);
+  border-radius: var(--ggwd-search-inf);
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  width: auto;
+  position: relative;
+}
+.ggwd-search-bar-search-img {
+  max-width: var(--ggwd-search-bar-icon-width);
+  height: auto;
+}
+.ggwd-search-bar-content {
+  white-space: nowrap;
+  min-width: 50px;
+  width: calc(100% - var(--ggwd-search-bar-icon-width));
+  margin-right: auto;
+  overflow-x: auto;
+}
+.ggwd-search-bar-content-text {
+  display: block;
+  width: 0;
+}
+.ggwd-search-bar-content::after {
+  content: '';
+  width: 20px;
+}
+
+.ggwd-search-left {
+  flex: 1;
+  min-width: 100px;
+  display: flex;
+  flex-direction: column;
+}
+.ggwd-search-start-google-page {
+  flex: 1;
+  width: auto;
+  border: none;
+  background-color: var(--ggwd-search-start-google-page-background);
+}
+.ggwd-search-right:has(*) {
+  flex: .667;
+  min-width: 80px;
+}
+.ggwd-search-left, .ggwd-search-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ggwd-search-result-gap)
+}
+
+.ggwd-search-result {
+  width: auto;
+  display: flex;
+  flex-direction: column;
+}
+.ggwd-search-title-line {
+  width: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--ggwd-search-title-gap);
+}
+.ggwd-search-title-image {
+  height: var(--ggwd-search-title-img-size);
+  width: var(--ggwd-search-title-img-size);
+  border-radius: 50%;
+  background: var(--ggwd-search-title-img-background);
+  flex: 0 0 auto;
+}
+.ggwd-search-title-text {
+  color: var(--ggwd-search-title-text-color);
+  font-size: var(--ggwd-search-title-text-size);
+  font-weight: var(--ggwd-search-title-text-weight);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ggwd-search-title-info-gap);
+}
+.ggwd-search-title-info {
+  color: var(--ggwd-search-title-info-color);
+  font-size: var(--ggwd-search-title-info-size);
+}
+
+.ggwd-search-result-theme {
+  color: var(--ggwd-search-theme-color);
+  font-size: var(--ggwd-search-theme-size);
+  margin-top: var(--ggwd-search-title-theme-gap);
+  margin-bottom: var(--ggwd-search-theme-content-gap);
+}
+.ggwd-search-result-content {
+  color: var(--ggwd-search-content-color);
+  font-size: var(--ggwd-search-content-font-size);
+}
+.ggwd-search-result-about {
+  color: var(--ggwd-search-about-color);
+  font-size: var(--ggwd-search-about-font-size);
+  display: flex;
+  gap: 5px;
+}
+.ggwd-title.ggwd-search-logo {
+  zoom: .2;
+}
+
+.ggwd-secret-word, .ggwd-secret-hidden {
+  position: relative;
+}
+.ggwd-secret-hidden {
+  color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.ggwd-secret-hidden::before {
+  content: '';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--ggwd-secret-hidden-overlay);
+  position: absolute;
+  top: var(--ggwd-secret-overlay-contract);
+  bottom: var(--ggwd-secret-overlay-contract);
+  left: 0px;
+  right: 0px;
+  color: var(--ggwd-secret-overlay-text-color);
+}
+.ggwd-secret-hidden.ggwd-secret-title::before {
+  content: var(--ggwd-text-unlock-content);
+  white-space: nowrap;
+  overflow: hidden;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+.ggwd-secret-hidden.ggwd-secret-title:hover::after {
+  content: var(--ggwd-text-unlock-content-desc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: color-mix(in srgb, var(--ggwd-secret-hidden-overlay) 50%, transparent 50%);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  border-radius: 15px;
+  padding: 5px;
+  z-index: 10000;
+  position: absolute;
+  width: auto;
+  color: var(--ggwd-secret-overlay-text-color);
+}
+@keyframes ggwd-word-found {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: 100%;
+  }
+}
+.ggwd-secret-word:not(.ggwd-secret-hidden)::before {
+  content: '';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--ggwd-secret-hidden-overlay);
+  position: absolute;
+  top: var(--ggwd-secret-overlay-contract);
+  bottom: var(--ggwd-secret-overlay-contract);
+  left: 0px;
+  right: 0px;
+  color: var(--ggwd-secret-overlay-text-color);
+  animation: ggwd-word-found .4s ease-out 0s forwards;
+}

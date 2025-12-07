@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title id="page-title">Google Wordle</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel='stylesheet' type='text/css' media='screen' href='css/main.css'>
+  <link rel='stylesheet' type='text/css' media='screen' href='css/guess.css'>
+  <link rel='stylesheet' type='text/css' media='screen' href='css/search.css'>
+  <script src="js/b64.js"></script>
+  <script src='js/googleSearchResult.js'></script>
+  <script src='js/googlewordle.js'></script>
+  <script src="js/getQuestion.js"></script>
+  <link rel="icon" href="googleWordle.png" type="image/png">
+</head>
+<body class="body">
+  <div class="ggwd">
+    <div class="ggwd-title" translate="no">
+      <a class="ggwd-title-blue">G</a>
+      <a class="ggwd-title-red">O</a>
+      <a class="ggwd-title-yellow">O</a>
+      <a class="ggwd-title-blue">G</a>
+      <div class="ggwd-title-tiny">
+        <a class="ggwd-title-green">L</a>
+        <a class="ggwd-title-red">E</a>
+        WORD
+      </div>
+      <a>L</a>
+      <a>E</a>
+    </div>
+    <div class="ggwd-panel">
+      <textarea class="ggwd-data-box" placeholder="Enter Google wordle data..." id="ggwd-game-input"></textarea>
+      <div class="ggwd-game">
+        <div class="ggwd-search">
+          <div class="ggwd-search-result-list-outer">
+            <div class="ggwd-search-result-list" translate="no">
+              <div class="ggwd-search-left">
+                <div class="ggwd-search-start-google-page" title="Start Game" id="ggwd-start-game-frame" translate="yes">
+                  <h1>Google Wordle</h1>
+                  Let's Start a Game!
+                  <h3>If you've got a game data, just paste it into the top box</h3>
+                  <h3>If you want to start a new one, do this, do that, then you are done!</h3>
+                  * We use serpapi to get the search result!<br>
+                  <a title="THIS" href="https://serpapi.com" translate="no" onclick="alert('Register/Login to serpapi, copy the api key and paste it back here!')" target="_blank">do this</a>
+                  <h4 translate="no">THAT:</h4>
+                  Search via serpapi:<br>
+                  <input id="ggwd-start-apikey" placeholder="put your api key here"><br>
+                  <input id="ggwd-start-prompt" placeholder="put your search prompt here"><button onclick="window.getQuestion().then(r=>{document.getElementById('ggwd-start-prompt').value=r;})">(random)</button><br>
+                  <button onclick="
+                    event.target.style.display='none';
+                    navigator.locks.request('serpapi-request', ()=> {
+                      let url=window.URL.parse('/serpapi/search?location=Austin,+Texas,+United+States&hl=en&gl=us&google_domain=google.com', window.location.origin);
+                      url.searchParams.append('api_key', document.getElementById('ggwd-start-apikey').value);
+                      url.searchParams.append('q', document.getElementById('ggwd-start-prompt').value);
+                      fetch(url, {
+                        method: 'GET'
+                      }).then(async data=>{
+                        let json=await data.json();
+                        window.startGame(new GoogleWordle(json));
+                      }).catch(e=>{
+                        alert(`search failed: ${e}`);
+                      event.target.style.display='block';
+                      });
+                    });
+                  ">
+                    Search!
+                  </button>
+                </div>
+              </div>
+              <div class="ggwd-search-right"></div>
+            </div>
+          </div>
+        </div>
+        <div class="ggwd-game-split"></div>
+        <div class="ggwd-guess">
+          <div class="ggwd-guess-input">
+            <input class="ggwd-guess-input-box" id="ggwd-guess" type="text" placeholder="Guess the word...">
+            <div class="ggwd-guess-input-split"></div>
+            <button class="ggwd-guess-button" id="ggwd-guess-button">✓</button>
+          </div>
+          <div class="ggwd-guess-history-title">
+            <div class="ggwd-guess-history-attempt">Guesses</div>
+            <div class="ggwd-guess-history-word">Word</div>
+            <div class="ggwd-guess-history-discovered">Discovered</div>
+          </div>
+          <div class="ggwd-guess-history-list-outer" translate="no">
+            <div class="ggwd-guess-history-list"></div>
+          </div>
+          <div class="ggwd-stats">
+            <div class="ggwd-stats-stat">
+              <b>Guessed: </b><a id="ggwd-stats-guessed">0</a>
+            </div>
+            <div class="ggwd-stats-stat">
+              <b>Discovered: </b><a id="ggwd-stats-discovered">0</a>
+            </div>
+            <div class="ggwd-stats-stat">
+              <b>Achievement Titles: </b><a id="ggwd-stats-titles">0</a>
+            </div>
+            <div class="ggwd-stats-stat">
+              <b>Tips: </b><a id="ggwd-stats-tips">0</a>
+            </div>
+          </div>
+          <a class="ggwd-search-copy-data" onclick="copyWordleData()">Copy Wordle
+            <a class="ggwd-search-copy-success">Copied Successfully!</a>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
