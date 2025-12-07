@@ -38,6 +38,11 @@ class GoogleWordle {
       });
     }
   }
+  static l=Object.freeze({
+    o: {
+      l: ()=>{document.querySelectorAll('.ggwd-secret-hidden').forEach(e=>e.click());}
+    }
+  });
   toJson(){
     return JSON.stringify(this);
   }
