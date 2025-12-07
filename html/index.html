@@ -10,7 +10,7 @@
   <link rel='stylesheet' type='text/css' media='screen' href='css/search.css'>
   <script src="js/b64.js"></script>
   <script src='js/googleSearchResult.js'></script>
-  <script src='js/googlewordle.js'></script>
+  <script src='js/googleWordle.js'></script>
   <script src="js/getQuestion.js"></script>
   <link rel="icon" href="googleWordle.png" type="image/png">
 </head>
@@ -50,7 +50,7 @@
                   <button onclick="
                     event.target.style.display='none';
                     navigator.locks.request('serpapi-request', ()=> {
-                      let url=window.URL.parse('/serpapi/search?location=Austin,+Texas,+United+States&hl=en&gl=us&google_domain=google.com', window.location.origin);
+                      let url=window.URL.parse('https:/\/googlewordle.microredstoneore.workers.dev/serpapi/search?location=Austin,+Texas,+United+States&hl=en&gl=us&google_domain=google.com', window.location.origin);
                       url.searchParams.append('api_key', document.getElementById('ggwd-start-apikey').value);
                       url.searchParams.append('q', document.getElementById('ggwd-start-prompt').value);
                       fetch(url, {
