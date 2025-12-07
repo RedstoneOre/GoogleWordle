@@ -11,6 +11,7 @@
   --ggwd-search-bar-margin-bottom: 5px;
   --ggwd-search-bar-border: 1px gray solid;
   --ggwd-search-bar-padding: 5px;
+  --ggwd-search-bar-padding-left: 12.5px;
   --ggwd-search-bar-icon-width: 30px;
 
   --ggwd-search-start-google-page-background: lightblue;
@@ -77,6 +78,7 @@
   margin-bottom: var(--ggwd-search-bar-margin-bottom);
   border: var(--ggwd-search-bar-border);
   padding: var(--ggwd-search-bar-padding);
+  padding-left: var(--ggwd-search-bar-padding-left);
   border-radius: var(--ggwd-search-inf);
   display: flex;
   align-items: center;

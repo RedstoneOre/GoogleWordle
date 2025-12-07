@@ -21,6 +21,7 @@
   --ggwd-history-horizontal-margin: 5px;
   --ggwd-history-fail-color: #af4040;
   --ggwd-history-success-color: #00dd00;
+  --ggwd-history-duplicated-color: #2222ff;
 
   --ggwd-states-color: black;
   --ggwd-states-size: 12px;
@@ -130,6 +131,9 @@
 }
 .ggwd-guess-history-fail {
   color:var(--ggwd-history-fail-color);
+}
+.ggwd-guess-history-duplicated {
+  color:var(--ggwd-history-duplicated-color);
 }
 .ggwd-guess-history-times {
   flex: 0 0 30%;

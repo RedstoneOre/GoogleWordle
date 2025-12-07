@@ -118,14 +118,29 @@ function discoverOnResult(res, num){
   }
 }
 
-let guessedTimes=0;
+let guessedTimes=0, guessedWords={};
 /**
  * Guess the word
  * @param {String} word 
  */
 function guess(word){
-  if(!word.match(/^[a-zA-Z0-9\-_]+$/)) return false;
+  if(!(wordleData instanceof GoogleWordle) || !word.match(/^[a-zA-Z0-9\-_]+$/)) return false;
   word=word.toLowerCase();
+  if(guessedWords.hasOwnProperty(word)){
+    if(historyList instanceof HTMLDivElement){
+      let newRecord = document.createElement('div');
+      newRecord.classList.add('ggwd-guess-history');
+      newRecord.innerHTML=`
+        <div class="ggwd-guess-history-attempt"></div>
+        <div class="ggwd-guess-history-word ggwd-guess-history-duplicated"></div>
+        <div class="ggwd-guess-history-discovered">DUPE</div>`
+      newRecord.querySelector('.ggwd-guess-history-attempt').innerText=String(++guessedTimes);
+      newRecord.querySelector('.ggwd-guess-history-word').innerText=word;
+      historyList.appendChild(newRecord);
+    }
+    return true;
+  }
+  guessedWords[word]=1;
   let cnt=0;
   if(searchResultList instanceof HTMLDivElement){
     statsIncrease("guessed");
@@ -164,10 +179,10 @@ function guess(word){
         });
       }
     }
-    statsIncrease("discovered", cnt);
-    statsIncrease("shown", cnt);
-    checkFinish();
   }
+  statsIncrease("discovered", cnt);
+  statsIncrease("shown", cnt);
+  checkFinish();
   return true;
 }
 
@@ -182,16 +197,14 @@ document.addEventListener("DOMContentLoaded",()=>{
   copyFail=document.querySelector('.ggwd-search-copy-fail');
   searchContainer=document.querySelector('.ggwd-search');
   guessButton.addEventListener('click',()=>{
-    if(guess(guessInput.value)){
-      guessInput.value='b';
+    if(guess(guessInput.value.trim())){
+      guessInput.value='';
     }
   });
   guessInput.addEventListener('keydown',e=>{
     if(e.key==='Enter' && !e.ctrlKey && !e.altKey && !e.shiftKey){
       e.preventDefault();
-      if(guess(guessInput.value)){
-        guessInput.value='';
-      }
+      guessButton.click();
     }
   });
   document.getElementById("ggwd-game-input").addEventListener("input", event=>{
