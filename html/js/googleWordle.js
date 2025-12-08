@@ -360,9 +360,12 @@ function startGame(googleWordle){
 function checkFinish(){
   if(stats.shown >= Number(searchContainer.getAttribute('hidden-word-count'))){
     resultPage.classList.add('ggwd-result-page-shown');
-    resultAnalyticsContainer.appendChild(new WordleResultAnalytics("Guessed Words/Total:", stats.discovered*100/stats.shown).generateElement());
-    resultAnalyticsContainer.appendChild(new WordleResultAnalytics("Green/Total:", stats.green*100/stats.guessed).generateElement());
-    resultAnalyticsContainer.appendChild(new WordleResultAnalytics("Non-Dupe/Total:", stats.nonDupe*100/stats.guessed).generateElement());
+    if(resultAnalyticsContainer instanceof HTMLElement){
+      resultAnalyticsContainer.innerHTML='';
+      resultAnalyticsContainer.appendChild(new WordleResultAnalytics("Guessed Words/Total:", stats.discovered*100/stats.shown).generateElement());
+      resultAnalyticsContainer.appendChild(new WordleResultAnalytics("Green/Total:", stats.green*100/stats.guessed).generateElement());
+      resultAnalyticsContainer.appendChild(new WordleResultAnalytics("Non-Dupe/Total:", stats.nonDupe*100/stats.guessed).generateElement());
+    }
     try {
       const doConfetti=()=>{
         confetti({angle: -90, spread: 90, startVelocity: 30, shapes: ['square', confetti.shapeFromText({text: 'W'})],particleCount: 30, ticks: 300, origin: { x: Math.random(), y: 0 }})
