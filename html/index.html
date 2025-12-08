@@ -8,7 +8,9 @@
   <link rel='stylesheet' type='text/css' media='screen' href='css/main.css'>
   <link rel='stylesheet' type='text/css' media='screen' href='css/guess.css'>
   <link rel='stylesheet' type='text/css' media='screen' href='css/search.css'>
+  <link rel='stylesheet' type='text/css' media='screen' href='css/result_page.css'>
   <script src="js/b64.js"></script>
+  <script src="js/result.js"></script>
   <script src='js/googleSearchResult.js'></script>
   <script src='js/googleWordle.js'></script>
   <script src="js/getQuestion.js"></script>
@@ -35,39 +37,38 @@
         <div class="ggwd-search">
           <div class="ggwd-search-result-list-outer">
             <div class="ggwd-search-result-list" translate="no">
-              <div class="ggwd-search-left">
-                <div class="ggwd-search-start-google-page" title="Start Game" id="ggwd-start-game-frame" translate="yes">
-                  <h1>Google Wordle</h1>
-                  Let's Start a Game!
-                  <h3>If you've got a game data, just paste it into the top box</h3>
-                  <h3>If you want to start a new one, do this, do that, then you are done!</h3>
-                  * We use serpapi to get the search result!<br>
-                  <a title="THIS" href="https://serpapi.com" translate="no" onclick="alert('Register/Login to serpapi, copy the api key and paste it back here!')" target="_blank">do this</a>
-                  <h4 translate="no">THAT:</h4>
-                  Search via serpapi:<br>
-                  <input id="ggwd-start-apikey" placeholder="put your api key here"><br>
-                  <input id="ggwd-start-prompt" placeholder="put your search prompt here"><button onclick="window.getQuestion().then(r=>{document.getElementById('ggwd-start-prompt').value=r;})">(random)</button><br>
-                  <button onclick="
-                    event.target.style.display='none';
-                    navigator.locks.request('serpapi-request', ()=> {
-                      let url=window.URL.parse('https:/\/googlewordle.microredstoneore.workers.dev/serpapi/search?location=Austin,+Texas,+United+States&hl=en&gl=us&google_domain=google.com', window.location.origin);
-                      url.searchParams.append('api_key', document.getElementById('ggwd-start-apikey').value);
-                      url.searchParams.append('q', document.getElementById('ggwd-start-prompt').value);
-                      fetch(url, {
-                        method: 'GET'
-                      }).then(async data=>{
-                        let json=await data.json();
-                        window.startGame(new GoogleWordle(json));
-                      }).catch(e=>{
-                        alert(`search failed: ${e}`);
-                      event.target.style.display='block';
-                      });
+              <div class="ggwd-search-start-google-page ggwd-search-start-google-page-shown" title="Start Game" id="ggwd-start-game-frame" translate="yes">
+                <h1>Google Wordle</h1>
+                Let's Start a Game!
+                <h3>If you've got a game data, just paste it into the top box</h3>
+                <h3>If you want to start a new one, do this, do that, then you are done!</h3>
+                * We use serpapi to get the search result!<br>
+                <a title="THIS" href="https://serpapi.com" translate="no" onclick="alert('Register/Login to serpapi, copy the api key and paste it back here!')" target="_blank">do this</a>
+                <h4 translate="no">THAT:</h4>
+                Search via serpapi:<br>
+                <input id="ggwd-start-apikey" placeholder="put your api key here"><br>
+                <input id="ggwd-start-prompt" placeholder="put your search prompt here"><button onclick="window.getQuestion().then(r=>{document.getElementById('ggwd-start-prompt').value=r;})">(random)</button><br>
+                <button onclick="
+                  event.target.style.display='none';
+                  navigator.locks.request('serpapi-request', ()=> {
+                    let url=window.URL.parse('https:/\/googlewordle.microredstoneore.workers.dev/serpapi/search?location=Austin,+Texas,+United+States&hl=en&gl=us&google_domain=google.com', window.location.origin);
+                    url.searchParams.append('api_key', document.getElementById('ggwd-start-apikey').value);
+                    url.searchParams.append('q', document.getElementById('ggwd-start-prompt').value);
+                    fetch(url, {
+                      method: 'GET'
+                    }).then(async data=>{
+                      let json=await data.json();
+                      window.startGame(new GoogleWordle(json));
+                    }).catch(e=>{
+                      alert(`search failed: ${e}`);
+                    event.target.style.display='block';
                     });
-                  ">
-                    Search!
-                  </button>
-                </div>
+                  });
+                ">
+                  Search!
+                </button>
               </div>
+              <div class="ggwd-search-left"></div>
               <div class="ggwd-search-right"></div>
             </div>
           </div>
@@ -89,22 +90,60 @@
           </div>
           <div class="ggwd-stats">
             <div class="ggwd-stats-stat">
-              <b>Guessed: </b><a id="ggwd-stats-guessed">0</a>
+              <b>Guesses: </b><a class="ggwd-stats-guessed">0</a>
             </div>
             <div class="ggwd-stats-stat">
-              <b>Discovered: </b><a id="ggwd-stats-discovered">0</a>
+              <b>Guessed Words: </b><a class="ggwd-stats-discovered">0</a>
             </div>
             <div class="ggwd-stats-stat">
-              <b>Achievement Titles: </b><a id="ggwd-stats-titles">0</a>
+              <b>Achievement Titles: </b><a class="ggwd-stats-titles">0</a>
             </div>
             <div class="ggwd-stats-stat">
-              <b>Tips: </b><a id="ggwd-stats-tips">0</a>
+              <b>Tips: </b><a class="ggwd-stats-tips">0</a>
             </div>
           </div>
-          <a class="ggwd-search-copy-data" onclick="copyWordleData()">Copy Wordle
+          <div class="ggwd-search-copy-data" onclick="copyWordleData()">Copy Wordle
             <a class="ggwd-search-copy-success">Copied Successfully!</a>
-          </a>
+            <a class="ggwd-search-copy-fail">Failed to Copy!</a>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+  <div class="ggwd-result-page ggwd-result-page-shown">
+    <div class="ggwd-result-panel">
+      <div class="ggwd-result-title">
+        Success!
+      </div>
+      <div class="ggwd-result-content">
+        <div class="ggwd-result-wordle-data">
+          <div class="ggwd-stats-stat">
+            <b>Titles: </b><a class="ggwd-stats-titles">0</a>
+          </div>
+          <div class="ggwd-stats-stat">
+            <b>Total Words to Guess: </b><a class="ggwd-stats-shown">0</a>
+          </div>
+        </div>
+        <div class="ggwd-result-analytics"></div>
+        <div class="ggwd-result-stats">
+          <div class="ggwd-stats-stat">
+            <b>Guesses: </b><a class="ggwd-stats-guessed">0</a>
+          </div>
+          <div class="ggwd-stats-stat">
+            <b>Guessed Words: </b><a class="ggwd-stats-discovered">0</a>
+          </div>
+          <div class="ggwd-stats-stat">
+            <b>Tips: </b><a class="ggwd-stats-tips">0</a>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="ggwd-result-button-list">
+          <button class="ggwd-result-button" onclick="copyWordleData(true)">Copy Wordle</button>
+          <!-- <button class="ggwd-result-button">Share Result</button> -->
+          <button class="ggwd-result-button" onclick="reset()">New Game</button>
+        </div>
+        <div class="ggwd-result-message"></div>
       </div>
     </div>
   </div>

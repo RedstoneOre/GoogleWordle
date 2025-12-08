@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glitchy Bouncy Balls</title>
+<style>
+  body { margin: 0; overflow: hidden; background: #111; }
+  canvas { display: block; background: #222; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let vw = window.innerWidth;
+let vh = window.innerHeight;
+
+canvas.width = vw;
+canvas.height = vh;
+
+const GRAVITY = 0.4;
+const SPEED_MULTIPER = 2;
+const MAX_SPEED = 50; // cap velocities to prevent glitches
+
+let mouse = {x: vw/2, y: vh/2, radius: 50};
+window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+class Ball {
+    constructor(x, y, radius, color){
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.color = color;
+        this.vx = (Math.random()*6 - 3)*SPEED_MULTIPER;
+        this.vy = (Math.random()*6 - 3)*SPEED_MULTIPER;
+        this.noBorderBounce=false;
+    }
+
+    draw(){
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    }
+
+    static color16(){
+        let r = Math.floor(Math.random()*256);
+        let g = Math.floor(Math.random()*256);
+        let b = Math.floor(Math.random()*256);
+        let color = '#'+r.toString(16)+g.toString(16)+b.toString(16);
+        return color;
+    }
+
+    update(balls){
+        // Gravity
+        this.vy += GRAVITY;
+
+        // Apply velocity
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Mid-air random jump (vy reset, not multiplied)
+        if(Math.random() < 0.02){
+            this.vy = -(5 + Math.random()*10)*SPEED_MULTIPER; // random upward speed
+            this.vx += (Math.random()-0.5)*2*SPEED_MULTIPER; // small random horizontal shift
+        }
+        if(Math.random() < 0.002){
+            this.noBorderBounce=true;
+        }
+        if(Math.random() < 0.002){
+          newBall();
+        }
+
+        // Bounce off walls
+        if(!this.noBorderBounce){
+            if(this.x - this.radius < 0){ this.x = this.radius; this.vx = Math.abs(this.vx); }
+            if(this.x + this.radius > vw){ this.x = vw - this.radius; this.vx = -Math.abs(this.vx); }
+            if(this.y - this.radius < 0){ this.y = this.radius; this.vy = Math.abs(this.vy); }
+            if(this.y + this.radius > vh){ this.y = vh - this.radius; this.vy = -Math.abs(this.vy); }
+        } else {
+            if( this.x + this.radius < 0 ||
+                this.x - this.radius > vw ||
+                this.y + this.radius < 0 ||
+                this.y - this.radius > vh){
+                  if(Math.random()<0.5){
+                      this.x = (Math.random()<0.5) ? -this.radius : vw+this.radius;
+                      this.y = this.radius+Math.random()*(vh-2*this.radius);
+                  } else {
+                      this.x = this.radius+Math.random()*(vw-2*this.radius);
+                      this.y = (Math.random()<0.5) ? -this.radius : vh+this.radius;
+                  }
+                  console.log(this);
+                  this.noBorderBounce=false;
+            }
+        }
+
+        // Ball collisions
+        for(let i=0; i<balls.length; i++){
+            if(this===balls[i]) continue;
+            const dx = balls[i].x - this.x;
+            const dy = balls[i].y - this.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < this.radius + balls[i].radius){
+                const angle = Math.atan2(dy, dx);
+                const overlap = this.radius + balls[i].radius - dist;
+                const shift = overlap/2 + 0.5;
+
+                this.x -= Math.cos(angle)*shift;
+                this.y -= Math.sin(angle)*shift;
+                balls[i].x += Math.cos(angle)*shift;
+                balls[i].y += Math.sin(angle)*shift;
+
+                // Swap velocities (simple elastic collision)
+                const tempVx = this.vx;
+                const tempVy = this.vy;
+                this.vx = balls[i].vx;
+                this.vy = balls[i].vy;
+                balls[i].vx = tempVx;
+                balls[i].vy = tempVy;
+            }
+        }
+
+        // Cursor collision
+        let dx = this.x - mouse.x;
+        let dy = this.y - mouse.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist < this.radius + mouse.radius){
+            const angle = Math.atan2(dy, dx);
+            const overlap = this.radius + mouse.radius - dist;
+            this.x += Math.cos(angle)*overlap;
+            this.y += Math.sin(angle)*overlap;
+            const force = (2 + Math.random()*2) * SPEED_MULTIPER;
+            this.vx += Math.cos(angle)*force;
+            this.vy += Math.sin(angle)*force;
+        }
+
+        // Clamp velocities to prevent runaway glitches
+        this.vx = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, this.vx));
+        this.vy = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, this.vy));
+    }
+}
+
+let balls = [];
+function newBall(){
+    const radiusBase=Math.random();
+    const radius = 10+(Math.pow(radiusBase,600)*10000+radiusBase*10);
+    if(balls.length > 1000) balls=[];
+    balls.push(new Ball(radius+Math.random()*(vw-2*radius), radius+Math.random()*(vh-2*radius), radius, Ball.color16()));
+}
+
+function animate(){
+    ctx.clearRect(0,0,vw,vh);
+    balls.forEach(ball => { ball.update(balls); ball.draw(); });
+    requestAnimationFrame(animate);
+}
+
+animate();
+for(let i=0;i < 10;++i){
+  newBall();
+}
+
+window.addEventListener('resize', () => {
+    vw = window.innerWidth;
+    vh = window.innerHeight;
+    canvas.width = vw;
+    canvas.height = vh;
+});
+
+</script>
+</body>
+</html>

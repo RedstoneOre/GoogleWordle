@@ -42,6 +42,7 @@ html{
   flex-direction: column;
   margin: 0 var(--ggwd-main-gap);
   flex: 1;
+  position: relative;
 }
 
 .ggwd-title {
@@ -141,6 +142,7 @@ html{
   display: flex;
   width: auto;
   justify-content: center;
+  align-items: center;
 }
 .ggwd-search-copy-success {
   color: var(--ggwd-copy-success-color);

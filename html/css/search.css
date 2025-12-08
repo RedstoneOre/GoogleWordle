@@ -1,4 +1,4 @@
-.ggwd-search {
+:root {
   --ggwd-text-unlock-content: '...';
   --ggwd-text-unlock-content-desc: 'This achievement thing will be unlocked when 70% of the content is unlocked!';
 
@@ -106,7 +106,7 @@
   width: 20px;
 }
 
-.ggwd-search-left {
+.ggwd-search-start-google-page:not(.ggwd-search-start-google-page-shown)+.ggwd-search-left {
   flex: 1;
   min-width: 100px;
   display: flex;
@@ -117,6 +117,9 @@
   width: auto;
   border: none;
   background-color: var(--ggwd-search-start-google-page-background);
+}
+.ggwd-search-start-google-page:not(.ggwd-search-start-google-page-shown) {
+  display: none;
 }
 .ggwd-search-right:has(*) {
   flex: .667;

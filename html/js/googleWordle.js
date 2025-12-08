@@ -80,22 +80,41 @@ let stats = {
   discovered: 0,
   tips: 0,
   titles: 0,
-  shown: 0
+  shown: 0,
+  green: 0,
+  nonDupe: 0,
+  reset: ()=>{
+    statsIncrease('guessed', -stats.guessed);
+    statsIncrease('discovered', -stats.discovered);
+    statsIncrease('tips', -stats.tips);
+    statsIncrease('titles', -stats.titles);
+    statsIncrease('shown', -stats.shown);
+    statsIncrease('green', -stats.green);
+    statsIncrease('nonDupe', -stats.nonDupe);
+  }
 }
 function statsIncrease(stateName, num=1){
   stats[stateName]+=num;
-  const display = document.getElementById(`ggwd-stats-${stateName}`);
-  if(display){
-    display.innerText=stats[stateName];
-  }
+  Array.from(document.getElementsByClassName(`ggwd-stats-${stateName}`)).forEach(display=>{
+    if(display){
+      display.innerText=stats[stateName];
+    }
+  });
 }
 
 let guessButton=null;
 let guessInput=null;
+let gameStartInput = null;
 let searchResultList=null;
+let searchLeft=null;
+let searchRight=null;
 let historyList=null;
 let wordleData=null;
 let searchContainer=null;
+let startGameFrame=null;
+let resultPage=null;
+let resultAnalyticsContainer=null;
+let resultMessage=null;
 
 function findResult(component){
   if(component.classList.contains("ggwd-secret-word")){
@@ -131,7 +150,17 @@ let guessedTimes=0, guessedWords={};
 function guess(word){
   if(!(wordleData instanceof GoogleWordle) || !word.match(/^[a-zA-Z0-9\-_]+$/)) return false;
   word=word.toLowerCase();
+  const scrollGuessHistory=()=>{
+    const historyListOuter = historyList.parentElement;
+    const onBottom = historyListOuter.scrollTop+historyListOuter.clientHeight>=historyList.clientHeight-10;
+    if(onBottom){
+      historyListOuter.scrollTo({
+        top: historyList.clientHeight
+      });
+    }
+  };
   if(guessedWords.hasOwnProperty(word)){
+    statsIncrease("guessed");
     if(historyList instanceof HTMLDivElement){
       let newRecord = document.createElement('div');
       newRecord.classList.add('ggwd-guess-history');
@@ -142,6 +171,7 @@ function guess(word){
       newRecord.querySelector('.ggwd-guess-history-attempt').innerText=String(++guessedTimes);
       newRecord.querySelector('.ggwd-guess-history-word').innerText=word;
       historyList.appendChild(newRecord);
+      scrollGuessHistory();
     }
     return true;
   }
@@ -170,19 +200,13 @@ function guess(word){
       newRecord.querySelector('.ggwd-guess-history-discovered').innerText=String(cnt);
       if(cnt>0){
         newRecord.querySelector('.ggwd-guess-history-word').classList.add('ggwd-guess-history-success');
+        statsIncrease('green');
       } else {
         newRecord.querySelector('.ggwd-guess-history-word').classList.add('ggwd-guess-history-fail');
       }
-
-      const historyListOuter = historyList.parentElement;
-      const onBottom = historyListOuter.scrollTop+historyListOuter.clientHeight>=historyList.clientHeight-10;
+      statsIncrease('nonDupe');
       historyList.appendChild(newRecord);
-      console.log(onBottom);
-      if(onBottom){
-        historyListOuter.scrollTo({
-          top: historyList.clientHeight
-        });
-      }
+      scrollGuessHistory();
     }
   }
   statsIncrease("discovered", cnt);
@@ -196,11 +220,18 @@ let copyFail=null;
 document.addEventListener("DOMContentLoaded",()=>{
   guessInput=document.getElementById('ggwd-guess');
   guessButton=document.getElementById('ggwd-guess-button');
+  gameStartInput=document.getElementById("ggwd-game-input");
   searchResultList=document.querySelector('.ggwd-search-result-list');
+  searchLeft = document.querySelector('.ggwd-search-left');
+  searchRight = document.querySelector('.ggwd-search-left');
   historyList=document.querySelector('.ggwd-guess-history-list');
   copySuccess=document.querySelector('.ggwd-search-copy-success');
   copyFail=document.querySelector('.ggwd-search-copy-fail');
   searchContainer=document.querySelector('.ggwd-search');
+  startGameFrame=document.getElementById("ggwd-start-game-frame");
+  resultPage=document.querySelector('.ggwd-result-page');
+  resultAnalyticsContainer=document.querySelector('.ggwd-result-analytics');
+  resultMessage=document.querySelector('.ggwd-result-message');
   guessButton.addEventListener('click',()=>{
     if(guess(guessInput.value.trim())){
       guessInput.value='';
@@ -215,7 +246,6 @@ document.addEventListener("DOMContentLoaded",()=>{
   document.getElementById("ggwd-game-input").addEventListener("input", event=>{
     const json = JSON.parse(b64Decode(event.target.value));
     startGame(GoogleWordle.fromJson(json));
-    event.target.remove();
   });
   let titleControlTimeout=null;
   titleControlTimeout=setInterval(()=>{
@@ -234,7 +264,6 @@ document.addEventListener("DOMContentLoaded",()=>{
     if(target.classList.contains('ggwd-secret-word') && target.classList.contains('ggwd-secret-hidden')){
       target.classList.remove('ggwd-secret-hidden');
       const res = findResult(target);
-      console.log(res);
       discoverOnResult(res, 1);
       statsIncrease("tips");
       statsIncrease("shown");
@@ -244,23 +273,58 @@ document.addEventListener("DOMContentLoaded",()=>{
   // document.getElementById("ggwd-start-game-frame").src="https://google.com";
 });
 
-function copyWordleData() {
-  if(wordleData instanceof GoogleWordle){
-    navigator.clipboard.writeText(b64Encode(wordleData.toJson())).then(()=>{
-      if(copySuccess instanceof HTMLAnchorElement){
-        copySuccess.animate([
+function copyWordleData(resultScreen=false) {
+  const failToCopy=()=>{
+    if(resultScreen){
+      resultMessage.innerText='Failed to Copy!';
+      resultMessage.animate([
+          { fontSize: '0px', color: 'var(--google-red)' },
+          { fontSize: '36px' },
+          { fontSize: '0px', color: 'var(--google-red)' }
+        ], {
+          duration: 1000
+        });
+    } else {
+      if(copyFail instanceof HTMLAnchorElement){
+        copyFail.animate([
           { fontSize: '0px' },
           { fontSize: '12px' },
           { fontSize: '0px' }
         ], {
           duration: 1000
         });
+      } else {
+        alert('FAILED to copy!');
+      }
+    }
+  }
+  if(wordleData instanceof GoogleWordle){
+    navigator.clipboard.writeText(b64Encode(wordleData.toJson())).then(()=>{
+      if(resultScreen){
+        resultMessage.innerText='Copied Successfully!';
+        resultMessage.animate([
+            { fontSize: '0px', color: 'var(--google-green)' },
+            { fontSize: '12px' },
+            { fontSize: '0px', color: 'var(--google-green)' }
+          ], {
+            duration: 1000
+          });
+      } else {
+        if(copySuccess instanceof HTMLAnchorElement){
+          copySuccess.animate([
+            { fontSize: '0px' },
+            { fontSize: '12px' },
+            { fontSize: '0px' }
+          ], {
+            duration: 1000
+          });
+        }
       }
     }).catch(()=>{
-      alert('FAILED to copy!');
+      failToCopy();
     });
   } else {
-    alert('FAILED to copy!');
+    failToCopy();
   }
 }
 
@@ -269,11 +333,15 @@ function copyWordleData() {
  * @param {GoogleWordle} json 
  */
 function startGame(googleWordle){
-  const searchLeft = document.querySelector('.ggwd-search-left');
-  searchLeft.innerHTML='';
+  startGameFrame.classList.remove('ggwd-search-start-google-page-shown');
   console.log(googleWordle);
   wordleData=googleWordle;
   searchContainer.prepend(wordleData.generateSearchBarElement());
+  try{
+    const searchBarElement=wordleData.generateSearchBarElement();
+    searchBarElement.classList.add('ggwd-result-search-bar');
+    document.querySelector('.ggwd-result-content').prepend(searchBarElement);
+  }catch(e){}
   let hiddenCnt=0, resultElement;
   wordleData.searchResult.forEach(e=>{
     resultElement=e.generateElement();
@@ -281,14 +349,59 @@ function startGame(googleWordle){
     hiddenCnt+=Number(resultElement.getAttribute('hidden-word-count'));
   });
   searchContainer.setAttribute('hidden-word-count', String(hiddenCnt));
-  const gameStartInput = document.getElementById("ggwd-game-input");
   if(gameStartInput instanceof HTMLElement){
-    gameStartInput.remove();
+    if(gameStartInput instanceof HTMLTextAreaElement){
+      gameStartInput.value='';
+    }
+    gameStartInput.style.display='none';
   }
 }
 
 function checkFinish(){
   if(stats.shown >= Number(searchContainer.getAttribute('hidden-word-count'))){
-    alert('Congrats!');
+    resultPage.classList.add('ggwd-result-page-shown');
+    resultAnalyticsContainer.appendChild(new WordleResultAnalytics("Guessed Words/Total:", stats.discovered*100/stats.shown).generateElement());
+    resultAnalyticsContainer.appendChild(new WordleResultAnalytics("Green/Total:", stats.green*100/stats.guessed).generateElement());
+    resultAnalyticsContainer.appendChild(new WordleResultAnalytics("Non-Dupe/Total:", stats.nonDupe*100/stats.guessed).generateElement());
   }
+}
+function reset(){
+  if(startGameFrame instanceof HTMLElement){
+    startGameFrame.classList.add('ggwd-search-start-google-page-shown');
+  }
+  if(searchLeft instanceof HTMLElement){
+    searchLeft.innerHTML='';
+  }
+  if(searchRight instanceof HTMLElement){
+    searchRight.innerHTML='';
+  }
+  if(searchContainer instanceof HTMLElement){
+    searchContainer.removeAttribute('hidden-word-count');
+    const searchBar = searchContainer.querySelector('.ggwd-search-bar');
+    if(searchBar){
+      searchBar.remove();
+    }
+  }
+  stats.reset();
+  if(gameStartInput instanceof HTMLElement){
+    gameStartInput.style.removeProperty('display');
+  }
+  if(resultPage instanceof HTMLElement){
+    resultPage.classList.remove('ggwd-result-page-shown');
+  }
+  if(historyList instanceof HTMLElement){
+    historyList.innerHTML='';
+  }
+  guessedTimes=0;
+  guessedWords={};
+  if(resultAnalyticsContainer instanceof HTMLElement){
+    resultAnalyticsContainer.innerHTML='';
+  }
+  if(resultPage instanceof HTMLElement){
+    const searchBar = resultPage.querySelector('.ggwd-search-bar');
+    if(searchBar){
+      searchBar.remove();
+    }
+  }
+  wordleData=null;
 }
