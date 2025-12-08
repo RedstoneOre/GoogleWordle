@@ -363,6 +363,13 @@ function checkFinish(){
     resultAnalyticsContainer.appendChild(new WordleResultAnalytics("Guessed Words/Total:", stats.discovered*100/stats.shown).generateElement());
     resultAnalyticsContainer.appendChild(new WordleResultAnalytics("Green/Total:", stats.green*100/stats.guessed).generateElement());
     resultAnalyticsContainer.appendChild(new WordleResultAnalytics("Non-Dupe/Total:", stats.nonDupe*100/stats.guessed).generateElement());
+    try {
+      const doConfetti=()=>{
+        confetti({angle: -90, spread: 90, startVelocity: 30, shapes: ['square', confetti.shapeFromText({text: 'W'})],particleCount: 30, ticks: 300, origin: { x: Math.random(), y: 0 }})
+      }
+      const intervalTask=setInterval(doConfetti, 100);
+      setTimeout(()=>clearInterval(intervalTask), 3000);
+    }catch (e){}
   }
 }
 function reset(){
