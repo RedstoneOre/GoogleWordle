@@ -154,9 +154,13 @@ function guess(word){
     const historyListOuter = historyList.parentElement;
     const onBottom = historyListOuter.scrollTop+historyListOuter.clientHeight>=historyList.clientHeight-10;
     if(onBottom){
-      historyListOuter.scrollTo({
-        top: historyList.clientHeight
-      });
+      return ()=>{
+        historyListOuter.scrollTo({
+          top: historyList.clientHeight
+        })
+      };
+    } else {
+      return ()=>{};
     }
   };
   if(guessedWords.hasOwnProperty(word)){
@@ -170,8 +174,9 @@ function guess(word){
         <div class="ggwd-guess-history-discovered">DUPE</div>`
       newRecord.querySelector('.ggwd-guess-history-attempt').innerText=String(++guessedTimes);
       newRecord.querySelector('.ggwd-guess-history-word').innerText=word;
+      const scroller=scrollGuessHistory();
       historyList.appendChild(newRecord);
-      scrollGuessHistory();
+      scroller();
     }
     return true;
   }
@@ -205,8 +210,9 @@ function guess(word){
         newRecord.querySelector('.ggwd-guess-history-word').classList.add('ggwd-guess-history-fail');
       }
       statsIncrease('nonDupe');
+      const scroller=scrollGuessHistory();
       historyList.appendChild(newRecord);
-      scrollGuessHistory();
+      scroller();
     }
   }
   statsIncrease("discovered", cnt);
