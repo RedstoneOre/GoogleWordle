@@ -62,7 +62,7 @@ class GoogleWordle {
     let result=document.createElement('div');
     result.classList.add('ggwd-search-bar');
     result.innerHTML=`
-    <img src="googleWordle.png" class="ggwd-search-bar-search-img">
+    <i class="fa fa-search ggwd-search-bar-search-img"></i>
     `
     let contentText=document.createElement('a');
     contentText.classList.add('ggwd-search-bar-content-text');

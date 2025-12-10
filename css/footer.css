@@ -1,0 +1,26 @@
+:root {
+  --ggwd-page-footer-color: var(--google-blue);
+  --ggwd-page-footer-padding: 20px;
+  --ggwd-page-footer-link-size: 30px;
+  --ggwd-page-footer-link-gap: 5px;
+}
+.ggwd-page-footer {
+  position: absolute;
+  top: 100%;
+  background-color: var(--ggwd-page-footer-color);
+  left: 0;
+  right: 0;
+  width: auto;
+  padding: var(--ggwd-page-footer-padding);
+  color: white;
+}
+.ggwd-page-footer-links {
+  display: flex;
+  gap: var(--ggwd-page-footer-link-gap);
+}
+.fa.ggwd-page-footer-link {
+  font-size: var(--ggwd-page-footer-link-size);
+  width: auto;
+  color: white;
+  text-decoration: none;
+}

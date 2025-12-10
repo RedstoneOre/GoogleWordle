@@ -5,6 +5,7 @@
   --ggwd-search-inf: 1000000000px;
   --ggwd-search-panel-color-width: 5px;
   --ggwd-search-gap: 10px;
+  --ggwd-search-min-width: 300px;
 
   --ggwd-search-bar-margin-side: 20px;
   --ggwd-search-bar-margin-top: 10px;
@@ -50,6 +51,7 @@
   flex-direction: column;
   gap: var(--ggwd-search-gap);
   background: var(--ggwd-search-result-list-background);
+  min-width: var(--ggwd-search-min-width);
   margin: var(--ggwd-search-panel-color-width);
   border-bottom-left-radius: calc(var(--ggwd-game-border-radius) - var(--ggwd-search-panel-color-width));
   border-top-left-radius: calc(var(--ggwd-game-border-radius) - var(--ggwd-search-panel-color-width));
@@ -90,6 +92,7 @@
 .ggwd-search-bar-search-img {
   max-width: var(--ggwd-search-bar-icon-width);
   height: auto;
+  margin-right: 5px;
 }
 .ggwd-search-bar-content {
   white-space: nowrap;
