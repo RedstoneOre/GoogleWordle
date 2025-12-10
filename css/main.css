@@ -19,7 +19,7 @@
   --ggwd-game-border-radius: 15px;
   --ggwd-game-background-color: #f0f0f0;
   --ggwd-game-split-color: #3f3f3f;
-  --ggwd-game-split-width: 3px;
+  --ggwd-game-split-width: 2px;
   --ggwd-game-split-margin: 3px;
   --ggwd-game-split-shadow: #7f7f7f;
 
@@ -137,10 +137,13 @@ html{
   align-items: center;
   justify-content: center;
 }
+.ggwd-search-bottom-row {
+  display: flex;
+}
 .ggwd-search-copy-data {
   font-size: 12px;
+  flex: 1;
   display: flex;
-  width: auto;
   justify-content: center;
   align-items: center;
 }

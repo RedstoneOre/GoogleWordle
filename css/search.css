@@ -52,6 +52,7 @@
   background: var(--ggwd-search-result-list-background);
   margin: var(--ggwd-search-panel-color-width);
   border-bottom-left-radius: calc(var(--ggwd-game-border-radius) - var(--ggwd-search-panel-color-width));
+  border-top-left-radius: calc(var(--ggwd-game-border-radius) - var(--ggwd-search-panel-color-width));
 }
 .ggwd-search-result-list-outer {
   display: flex;
