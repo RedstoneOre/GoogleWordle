@@ -147,12 +147,12 @@ let guessedTimes=0, guessedWords={};
  * Guess the word
  * @param {String} word 
  */
-function guess(word){
+function guess(word, opt={}){
   if(!(wordleData instanceof GoogleWordle) || !word.match(/^[a-zA-Z0-9\-_]+$/)) return false;
   word=word.toLowerCase();
   const scrollGuessHistory=()=>{
     const historyListOuter = historyList.parentElement;
-    const onBottom = historyListOuter.scrollTop+historyListOuter.clientHeight>=historyList.clientHeight-10;
+    const onBottom = (opt.alwaysScroll===true) || (historyListOuter.scrollTop+historyListOuter.clientHeight>=historyList.clientHeight-10);
     if(onBottom){
       return ()=>{
         historyListOuter.scrollTo({
@@ -239,9 +239,14 @@ document.addEventListener("DOMContentLoaded",()=>{
   resultAnalyticsContainer=document.querySelector('.ggwd-result-analytics');
   resultMessage=document.querySelector('.ggwd-result-message');
   guessButton.addEventListener('click',()=>{
-    if(guess(guessInput.value.trim())){
-      guessInput.value='';
-    }
+    let remainingInput=[];
+    const words=guessInput.value.trim().split(' ');
+    words.forEach(str=>{
+      if(!guess(str, {alwaysScroll: words.length>1})){
+        remainingInput.push(str);
+      }
+    });
+    guessInput.value=remainingInput.join(" ");
   });
   guessInput.addEventListener('keydown',e=>{
     if(e.key==='Enter' && !e.ctrlKey && !e.altKey && !e.shiftKey){
