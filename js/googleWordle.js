@@ -341,7 +341,7 @@ function copyWordleData(resultScreen=false) {
 
 /**
  * Start the game
- * @param {GoogleWordle} json 
+ * @param {GoogleWordle} googleWordle 
  */
 function startGame(googleWordle){
   startGameFrame.classList.remove('ggwd-search-start-google-page-shown');
@@ -362,7 +362,7 @@ function startGame(googleWordle){
   searchContainer.setAttribute('hidden-word-count', String(hiddenCnt));
   if(gameStartInput instanceof HTMLElement){
     if(gameStartInput instanceof HTMLTextAreaElement){
-      gameStartInput.value='';
+      gameStartInput.value=googleWordle.search.toLowerCase();
     }
     gameStartInput.style.display='none';
   }

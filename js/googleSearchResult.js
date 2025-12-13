@@ -155,7 +155,7 @@ class GoogleSearchResult {
     "you":0,"your":0,"yours":0,"yourself":0,"yourselves":0,
     "he":0,"him":0,"his":0,"himself":0,"she":0,"her":0,"herself":0,
     "it":0,"its":"0","itself":0,"they":0,"them":"0","their":0,"themselves":0,
-    "of":0,"for":0,"in":0,"at":0,"on":0,"to":0,
+    "of":0,"for":0,"in":0,"at":0,"on":0,"to":0,"as":0,
     "and":0,"or":0,"not":0,
     "am":0,"is":0,"are":0,"was":0,"were":0,"will":0,"would":0,
     "etc":0,"aka":0,"defenestrate":67
