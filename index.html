@@ -43,6 +43,18 @@
               <div class="ggwd-search-start-google-page ggwd-search-start-google-page-shown" title="Start Game" id="ggwd-start-game-frame" translate="yes">
                 <h1>Google Wordle</h1>
                 Let's Start a Game!
+                <button name="Play Daily Wordle" onclick="
+                  fetch('https:/\/googlewordle.microredstoneore.workers.dev/daily').then(async res => {
+                    if(!res.ok){
+                      alert(await res.text());
+                    } else {
+                      const data = await res.json();
+                      window.startGame(GoogleWordle.fromJson(data));
+                    }
+                  }).catch(e=>{
+                    alert('Failed to get Daily Wordle');
+                  });
+                ">&gt;&gt;&gt; PLAY DAILY LEVEL! &lt;&lt;&lt;</button>
                 <h3>If you've got a game data, just paste it into the top box</h3>
                 <h3>If you want to start a new one, do this, do that, then you are done!</h3>
                 * We use serpapi to get the search result!<br>
