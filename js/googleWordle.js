@@ -223,6 +223,13 @@ function guess(word, opt={}){
 
 let copySuccess=null;
 let copyFail=null;
+let inGame=false;
+window.addEventListener('beforeunload', event => {
+  if(inGame){
+      event.preventDefault();
+      event.returnValue = 'Your wordle progress cannot be saved, don\'t exit the page now!';
+  }
+});
 document.addEventListener("DOMContentLoaded",()=>{
   guessInput=document.getElementById('ggwd-guess');
   guessButton=document.getElementById('ggwd-guess-button');
@@ -354,6 +361,7 @@ function startGame(googleWordle){
     document.querySelector('.ggwd-result-content').prepend(searchBarElement);
   }catch(e){}
   let hiddenCnt=0, resultElement;
+  inGame=true;
   wordleData.searchResult.forEach(e=>{
     resultElement=e.generateElement();
     searchLeft.appendChild(resultElement);
@@ -373,6 +381,7 @@ function startGame(googleWordle){
 
 function checkFinish(){
   if(stats.shown >= Number(searchContainer.getAttribute('hidden-word-count'))){
+    inGame=false;
     resultPage.classList.add('ggwd-result-page-shown');
     if(resultAnalyticsContainer instanceof HTMLElement){
       resultAnalyticsContainer.innerHTML='';
