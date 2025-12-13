@@ -362,9 +362,12 @@ function startGame(googleWordle){
   searchContainer.setAttribute('hidden-word-count', String(hiddenCnt));
   if(gameStartInput instanceof HTMLElement){
     if(gameStartInput instanceof HTMLTextAreaElement){
-      gameStartInput.value=googleWordle.search.toLowerCase();
+      gameStartInput.value='';
     }
     gameStartInput.style.display='none';
+  }
+  if(guessInput instanceof HTMLInputElement || guessInput instanceof HTMLTextAreaElement){
+    guessInput.value=googleWordle.search.toLowerCase();
   }
 }
 
